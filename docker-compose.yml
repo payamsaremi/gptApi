@@ -1,0 +1,10 @@
+version: "3"
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    image: gptapi
+    environment:
+      - OPENAI_API_KEY
+    command: ["uvicorn", "src.main:app", "--host=0.0.0.0", "--reload"]
