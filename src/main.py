@@ -23,6 +23,7 @@ app = FastAPI()
 origins = [
     "http://localhost",
     "https://genoai.com/",
+    "https://genoai.com/dashboard",
      "http://localhost:3000",
      "http://127.0.0.1:3000",
     "http://localhost:3001",
