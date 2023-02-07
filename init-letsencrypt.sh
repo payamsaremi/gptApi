@@ -5,7 +5,7 @@
 #   exit 1
 # fi
 
-domains=(api.genoai.com)
+domains=(apis.genoai.com)
 rsa_key_size=4096
 data_path="./certbot"
 email="" # Adding a valid address is strongly recommended

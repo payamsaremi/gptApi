@@ -25,7 +25,7 @@ app = FastAPI()
 origins = [
     "https://genoai.com",
     "https://genoai.com/dashboard",
-    "https://api.genoai.com"
+    "https://apis.genoai.com"
 ]
 
 app.add_middleware(
