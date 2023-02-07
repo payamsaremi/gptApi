@@ -16,7 +16,7 @@ class Settings(BaseSettings):
 def get_settings():
     return Settings()
 
-api_key_header = APIKeyHeader(name="access_token", auto_error=False)
+api_key_header = APIKeyHeader(name="access-token", auto_error=False)
 
 async def get_api_key(settings: Settings = Depends(get_settings), api_key_header: str = Security(api_key_header)):
     print(settings, api_key_header)
