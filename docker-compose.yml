@@ -28,5 +28,6 @@ services:
     image: gptapi
     environment:
       - OPENAI_API_KEY
+      - GENOAI_API_KEY
       - PORT=8000
     command: ["uvicorn", "src.main:app", "--host=0.0.0.0", "--reload"]

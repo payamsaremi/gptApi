@@ -9,7 +9,7 @@ from pydantic import BaseSettings, BaseModel
 
 from fastapi.security.api_key import APIKey
 
-import auth
+from . import auth
 
 class Settings(BaseSettings):
     OPENAI_API_KEY: str = 'OPENAI_API_KEY'
