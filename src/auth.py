@@ -1,5 +1,5 @@
 from fastapi.security.api_key import APIKeyHeader
-from fastapi import Security, HTTPException, Depends
+from fastapi import Security, HTTPException, Depends, Header
 from starlette.status import HTTP_403_FORBIDDEN
 # from config import Settings, get_settings
 from pydantic import BaseSettings
@@ -26,3 +26,8 @@ async def get_api_key(settings: Settings = Depends(get_settings), api_key_header
         raise HTTPException(
             status_code=HTTP_403_FORBIDDEN, detail="Could not validate API KEY"
         )
+
+async def get_jwt(x_jwt: str = Header(None)):
+    if x_jwt is None:
+        raise HTTPException(status_code=400, detail='X-JWT header is missing')
+    return x_jwt
