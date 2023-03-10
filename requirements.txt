@@ -13,7 +13,7 @@ idna==3.3
 Jinja2==3.1.2
 MarkupSafe==2.1.1
 numpy==1.22.4
-openai==0.19.0
+openai>=0.19.0
 openpyxl==3.0.10
 pandas==1.4.2
 pandas-stubs==1.2.0.61

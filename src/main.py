@@ -40,6 +40,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get('/secure')
+async def secure(jwt: str = Depends(auth.get_jwt)):
+    payload = auth_handler.validate_jwt(jwt, settings.JWT_SECRET, [settings.JWT_ALGORITHM])
+    return {"message": "Welcome! You are authenticated. {}".format(payload)}
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", port=8000, reload=True)
+
+
+
 @app.get("/")
 def index():
     return { "message": "Welcome to GenoAI's APIs"}
@@ -47,7 +57,7 @@ def index():
 class Item(BaseModel):
     animal: str
 
-@app.post("/")
+@app.post("/old")
 async def index(item: Item, api_key: APIKey = Depends(auth.get_jwt)):
     response = openai.Completion.create(
         model="text-davinci-003",
@@ -60,10 +70,43 @@ async def index(item: Item, api_key: APIKey = Depends(auth.get_jwt)):
     return {"result": result}
 
 
-@app.get('/secure')
-async def secure(jwt: str = Depends(auth.get_jwt)):
-    payload = auth_handler.validate_jwt(jwt, settings.JWT_SECRET, [settings.JWT_ALGORITHM])
-    return {"message": "Welcome! You are authenticated. {}".format(payload)}
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", port=8000, reload=True)
+MODEL = "gpt-3.5-turbo"
+system_prompt="""
+the narrative must show cohesion throughout all slides.
+  Each slide must be entertaining and educational and captivate the listener.
+  Here is an example of how the JSON output should look like.       
+  (Important: do not use double quotes inside the texts):
+  {
+    "title": "an interesting title based on context of the presentation",
+    "slides": [
+        {
+            "title": "Give a title to this slide",
+            "content": "content of the presentation must be short, educational and entertaining",
+            "imagePrompt": "use the content of this slide to write a prompt for the AI to generate a realistic image, be contextual and based on facts"
+        }
+        continue for maximum 3 short slides
+    ]
+  },
+  -----------------------------
+ use the user's input from the next prompt to create the slides
+"""
+@app.post("/story-generator")
+async def index(item: Item, api_key: APIKey = Depends(auth.get_jwt)):
+    user_input=item.animal,
+    response = openai.ChatCompletion.create(
+    model=MODEL,
+    messages=[
+        {"role": "system", "content": "You are a teacher narrating a presentation."},
+        {"role": "system", "content": f'{system_prompt}'},
+        {"role": "user", "content": f'{user_input}'},
+        ],
+    temperature=0,
+)
+    result = response['choices'][0]['message']['content']
+    print("response", response)
+    return {"result": result}
+
+
+
+
