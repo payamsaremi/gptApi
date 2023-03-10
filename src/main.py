@@ -73,23 +73,22 @@ async def index(item: Item, api_key: APIKey = Depends(auth.get_jwt)):
 
 MODEL = "gpt-3.5-turbo"
 system_prompt="""
-the narrative must show cohesion throughout all slides.
-  Each slide must be entertaining and educational and captivate the listener.
-  Here is an example of how the JSON output should look like.       
-  (Important: do not use double quotes inside the texts):
-  {
+The user will provide a description of what they wan to learn and you will create a slide deck based that.
+Each slide must be entertaining, educational and captivate to the listener.
+You must only write the JSON format of the slide deck as a runnable code. 
+(Important: do not use double quotes inside the texts)
+Example of what you should response with:
+{
     "title": "an interesting title based on context of the presentation",
     "slides": [
         {
             "title": "Give a title to this slide",
-            "content": "content of the presentation must be short, educational and entertaining",
+            "content": "content of the presentation",
             "imagePrompt": "use the content of this slide to write a prompt for the AI to generate a realistic image, be contextual and based on facts"
         }
         continue for maximum 3 short slides
     ]
   },
-  -----------------------------
- use the user's input from the next prompt to create the slides
 """
 @app.post("/story-generator")
 async def index(item: Item, api_key: APIKey = Depends(auth.get_jwt)):
@@ -97,7 +96,7 @@ async def index(item: Item, api_key: APIKey = Depends(auth.get_jwt)):
     response = openai.ChatCompletion.create(
     model=MODEL,
     messages=[
-        {"role": "system", "content": "You are a teacher narrating a presentation."},
+        {"role": "system", "content": "You are a teacher narrating a presentation. only write in JSON format."},
         {"role": "system", "content": f'{system_prompt}'},
         {"role": "user", "content": f'{user_input}'},
         ],
